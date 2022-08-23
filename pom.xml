@@ -14,15 +14,19 @@
         <module>server-gateway</module>
     </modules>
 
-    <!--引入spring boot 父工程-->
+
+    <!--引入spring boot 父工程1212-->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.3.6.RELEASE</version>
     </parent>
-    <!--父工程-->
+
+
+    <!-- 声明打包方式是POM，代表这是一个父项目只来进行依赖、版本、模块管理。不写代码   -->
     <packaging>pom</packaging>
 
+    <!--定义jar包的版本号-->
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -38,7 +42,8 @@
     </properties>
 
 
-    <!--配置dependencyManagement锁定依赖的版本 并不是实际的依赖。-->
+    <!--配置 dependencyManagement 锁定依赖的版本 并不是实际的依赖  。-->
+
     <dependencyManagement>
         <dependencies>
             <dependency>

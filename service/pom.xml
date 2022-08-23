@@ -9,16 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <!--父工程-->
+    <artifactId>service</artifactId>
     <packaging>pom</packaging>
     <modules>
         <module>service-product</module>
     </modules>
-    <artifactId>service</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
 
     <dependencies>
         <!--依赖服务的工具类-->
@@ -51,6 +52,9 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+
+
+        <!--        以下是每个微服务都需要的公共治理设施  -->
 
         <!-- 服务注册 -->
         <dependency>
@@ -89,6 +93,5 @@
         </dependency>
 
     </dependencies>
-
 
 </project>

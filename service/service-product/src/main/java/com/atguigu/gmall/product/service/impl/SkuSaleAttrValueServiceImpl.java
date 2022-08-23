@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
 * @author mi
 * @description 针对表【sku_sale_attr_value(sku销售属性值)】的数据库操作Service实现
-* @createDate 2022-08-23 10:20:21
+* @createDate 2022-08-23 20:20:32
 */
 @Service
 public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueMapper, SkuSaleAttrValue>

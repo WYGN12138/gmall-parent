@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
 * @author mi
 * @description 针对表【spu_sale_attr_value(spu销售属性值)】的数据库操作Service实现
-* @createDate 2022-08-23 10:20:21
+* @createDate 2022-08-23 20:20:32
 */
 @Service
 public class SpuSaleAttrValueServiceImpl extends ServiceImpl<SpuSaleAttrValueMapper, SpuSaleAttrValue>

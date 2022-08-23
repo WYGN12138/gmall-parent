@@ -30,6 +30,10 @@ public class CategoryController {
     @Autowired
     BaseCategory3Service baseCategory3Service;
 
+    /**
+     * 获得一级分类
+     * @return
+     */
     @GetMapping("/getCategory1")
     public Result getCategory1(){
         List<BaseCategory1> list = baseCategory1Service.list();

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
-    <version>1.0</version>
+
     <modules>
         <module>common-util</module>
         <module>service-util</module>
@@ -22,11 +22,13 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+    <!--    不写依赖管理，直接导入依赖-->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <scope>provided </scope>
+            <!--  打包的时候不带我自己引入的这个-->
+            <scope>provided</scope>
         </dependency>
 
         <!--lombok用来简化实体类：需要安装lombok插件-->
@@ -56,10 +58,8 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <scope>provided </scope>
+            <scope>provided</scope>
         </dependency>
-
     </dependencies>
-
 
 </project>

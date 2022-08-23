@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
 * @author mi
 * @description 针对表【sku_image(库存单元图片表)】的数据库操作Mapper
-* @createDate 2022-08-23 10:20:21
+* @createDate 2022-08-23 20:20:32
 * @Entity com.atguigu.gmall.product.domain.SkuImage
 */
 public interface SkuImageMapper extends BaseMapper<SkuImage> {
