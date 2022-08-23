@@ -13,4 +13,6 @@ import java.util.List;
 public interface BaseAttrInfoService extends IService<BaseAttrInfo> {
 
     List<BaseAttrInfo> getAttrInfoAndValueByCategoryId(Long c1Id, Long c2Id, Long c3Id);
+
+    void saveAttrInfo(BaseAttrInfo info);
 }
