@@ -75,6 +75,13 @@ public class BaseTrademarkController {
         return Result.ok();
     }
 
+    //文件上传
+    @PostMapping("/fileUpload")
+    public Result fileUpload(){
+
+        return Result.ok();
+    }
+
 
 
 }
