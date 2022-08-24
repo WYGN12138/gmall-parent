@@ -2,7 +2,9 @@ package com.atguigu.gmall.product.controller;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.BaseAttrInfo;
+import com.atguigu.gmall.model.product.BaseAttrValue;
 import com.atguigu.gmall.product.service.BaseAttrInfoService;
+import com.atguigu.gmall.product.service.BaseAttrValueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,8 @@ public class BaseAttrController {
     @Autowired
     BaseAttrInfoService baseAttrInfoService;
     //admin/product/attrInfoList/2/13/61
+    @Autowired
+    BaseAttrValueService baseAttrValueService;
 
     /**
      * 根据分类查询对应属性
@@ -41,6 +45,20 @@ public class BaseAttrController {
         baseAttrInfoService.saveAttrInfo(info);
         return Result.ok();
     }
+
+    /**
+     * /admin/product/getAttrValueList/1
+     * 根据属性id获得属性值
+     */
+    @GetMapping("/getAttrValueList/{attrId}")
+    public Result getAttrValueList(@PathVariable("attrId")Long attrId){
+        List<BaseAttrValue> list =  baseAttrValueService.getAttrValueList(attrId);
+        return Result.ok(list);
+    }
+
+    //
+
+
 
 
 }
