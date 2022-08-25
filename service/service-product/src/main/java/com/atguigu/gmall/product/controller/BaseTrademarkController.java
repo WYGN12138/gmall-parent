@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * 品牌列表
  */
@@ -87,6 +89,17 @@ public class BaseTrademarkController {
         String url =  fileUploadService.fileUpload(file);
         //返回储存地址
         return Result.ok(url);
+    }
+
+    /**
+     * 获得所有品牌列表
+     * @return
+     */
+    ///admin/product/baseTrademark/getTrademarkList
+    @GetMapping("/baseTrademark/getTrademarkList")
+    public Result getTrademarkList(){
+        List<BaseTrademark> list = baseTrademarkService.list();
+        return Result.ok(list);
     }
 
 
