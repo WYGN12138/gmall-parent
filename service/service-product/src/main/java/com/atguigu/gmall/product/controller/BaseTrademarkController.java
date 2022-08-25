@@ -3,10 +3,12 @@ package com.atguigu.gmall.product.controller;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.BaseTrademark;
 import com.atguigu.gmall.product.service.BaseTrademarkService;
+import com.atguigu.gmall.product.service.FileUploadService;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 品牌列表
@@ -17,6 +19,8 @@ public class BaseTrademarkController {
 
     @Autowired
     BaseTrademarkService baseTrademarkService;
+    @Autowired
+    FileUploadService fileUploadService;
 
     /**
      * 分页查询品牌列表
@@ -77,9 +81,12 @@ public class BaseTrademarkController {
 
     //文件上传
     @PostMapping("/fileUpload")
-    public Result fileUpload(){
-
-        return Result.ok();
+    public Result fileUpload(@RequestPart("file")MultipartFile file) throws Exception {
+        //收到前端的文件
+        //上传minio
+        String url =  fileUploadService.fileUpload(file);
+        //返回储存地址
+        return Result.ok(url);
     }
 
 
