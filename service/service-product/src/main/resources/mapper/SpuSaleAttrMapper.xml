@@ -11,24 +11,64 @@
             <result property="saleAttrName" column="sale_attr_name" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!--    销售属性名和值的封装规则-->
     <resultMap id="SaleAttrNameAndValueRM"
                type="com.atguigu.gmall.model.product.SpuSaleAttr"
-    autoMapping="true">
+               autoMapping="true">
         <id column="id" property="id"></id>
-        <collection property="spuSaleAttrValueList" ofType="com.atguigu.gmall.model.product.BaseAttrValue">
+        <collection property="spuSaleAttrValueList"
+                    ofType="com.atguigu.gmall.model.product.SpuSaleAttrValue"
+                    autoMapping="true">
             <id column="vid" property="id"></id>
         </collection>
     </resultMap>
+
+    <!--    查询某个spu定义的所有销售属性名和值-->
     <select id="getSaleAttrAndValueBySpuId"
             resultMap="SaleAttrNameAndValueRM">
-        SELECT ssa.*,
+        select ssa.*,
                ssav.id vid,
                ssav.sale_attr_value_name
-        FROM spu_sale_attr ssa
-                 LEFT JOIN spu_sale_attr_value ssav
+        from spu_sale_attr ssa
+                 left join spu_sale_attr_value ssav
                            on ssa.spu_id = ssav.spu_id and
-                              ssa.base_sale_attr_id=ssav.base_sale_attr_id
-        WHERE ssa.spu_id=#{spuId}
+                              ssa.base_sale_attr_id = ssav.base_sale_attr_id
+        where ssa.spu_id = #{spuId} order by ssa.id,ssav.id
+    </select>
+<!--    1.查询对应值  2.固定顺序 3.标记所选sku定义属性-->
+    <select id="getSaleAttrAndValueMarkSku"
+            resultMap="SaleAttrNameAndValueRM">
+        SELECT
+            ssa.*,
+            ssav.id vid, ssav.sale_attr_value_name,
+            IF(skuv.sale_attr_value_id is null,'0','1') as is_checked
+        FROM spu_sale_attr ssa
+                 LEFT JOIN	spu_sale_attr_value ssav
+                              ON ssa.spu_id = ssav.spu_id
+                                  and ssa.base_sale_attr_id=ssav.base_sale_attr_id
+                 LEFT JOIN sku_sale_attr_value skuv
+                           on ssav.id =skuv.sale_attr_value_id AND skuv.sku_id=#{skuId}
+        where ssa.spu_id = #{spuId} ORDER BY  ssa.base_sale_attr_id,ssav.id
 
+    </select>
+
+
+    <!--    复杂SQL数据库层就不能高并发，高并发就不能写复杂SQL，大数据：sql boy  Java: java boy-->
+    <select id="getAllSkuSaleAttrValueJson"
+            resultType="com.atguigu.gmall.model.to.ValueSkuJsonTo">
+        select a.sku_id,
+               GROUP_CONCAT(DISTINCT sale_attr_value_id
+                            ORDER BY sale_attr_value_id ASC
+                            SEPARATOR '|') as value_json
+        from (select si.id sku_id,
+                     skuav.id vid,
+                     skuav.spu_id,
+                     skuav.sale_attr_value_id,
+                     ssav.base_sale_attr_id
+              from sku_info  si
+                       left join sku_sale_attr_value skuav on si.id = skuav.sku_id
+                       left join spu_sale_attr_value ssav on skuav.sale_attr_value_id = ssav.id
+              WHERE si.spu_id=#{spuId} ORDER BY si.id,ssav.base_sale_attr_id,skuav.sale_attr_value_id) a
+        GROUP BY a.sku_id
     </select>
 </mapper>

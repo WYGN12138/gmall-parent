@@ -1,14 +1,13 @@
-package com.atguigu.gmall.web;
+package com.atguigu.gmall.item;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringCloudApplication
 @EnableFeignClients
-public class WebApplication {
+@SpringCloudApplication
+public class ItemApplication {
     public static void main(String[] args) {
-        SpringApplication.run(WebApplication.class,args);
+        SpringApplication.run(ItemApplication.class,args);
     }
 }

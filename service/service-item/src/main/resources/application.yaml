@@ -1,15 +1,8 @@
 server:
-  port: 9010
+  port: 9030
 spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-  zipkin:
-    base-url: http://192.168.200.100:9411/
-    sender:
-      type: web
-  thymeleaf:
-    prefix: classpath:/templates/
-    suffix: .html
 feign:
   client:
     config:
@@ -18,3 +11,17 @@ feign:
         ConnectTimeOut: 5000
         #指建立连接后从服务端读取到可用资源所用的时间
         ReadTimeOut: 5000
+app:
+  thread-pool:
+    core: 4
+    max: 8
+    queue-size: 2000
+    keep-alive-time: 300
+
+
+#暴露所有监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
