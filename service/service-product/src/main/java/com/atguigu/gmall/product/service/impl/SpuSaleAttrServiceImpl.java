@@ -10,6 +10,7 @@ import com.atguigu.gmall.product.mapper.SpuSaleAttrMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ import java.util.Map;
 public class SpuSaleAttrServiceImpl extends ServiceImpl<SpuSaleAttrMapper, SpuSaleAttr>
     implements SpuSaleAttrService{
 
-    @Autowired
+    @Resource
     SpuSaleAttrMapper spuSaleAttrMapper;
 
     /**
@@ -41,7 +42,7 @@ public class SpuSaleAttrServiceImpl extends ServiceImpl<SpuSaleAttrMapper, SpuSa
     }
 
     @Override
-    public List<SpuSaleAttr> getSaleAttrAndValueMarkSku(Long spuId, Long skuId) {
+    public List<SpuSaleAttr> getSaleAttrAndValueMarkSku( Long spuId,Long skuId) {
         return   spuSaleAttrMapper.getSaleAttrAndValueMarkSku(spuId,skuId);
 
     }

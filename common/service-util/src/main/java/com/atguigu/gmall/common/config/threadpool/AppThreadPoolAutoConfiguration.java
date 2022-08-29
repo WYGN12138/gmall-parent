@@ -1,5 +1,8 @@
-package com.atguigu.gmall.item.config;
+package com.atguigu.gmall.common.config.threadpool;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -7,9 +10,19 @@ import java.util.concurrent.*;
 
 /**
  * 配置线程池
+ * 1.AppThreadPoolProperties 里面的所有属性和指定配置绑定
+ * 2；AppThreadPoolProperties 组件自动放到容器中
  */
+@EnableConfigurationProperties(AppThreadPoolProperties.class)
 @Configuration
 public class AppThreadPoolAutoConfiguration {
+
+
+    @Autowired
+    AppThreadPoolProperties appThreadPoolProperties;
+
+    @Value("${spring.application.name}")
+    String applicationName;
     @Bean
     public ThreadPoolExecutor coreExecutor() {
         /*int corePoolSize, 核心线程池：cpU核心数 4
@@ -21,17 +34,17 @@ public class AppThreadPoolAutoConfiguration {
          * RejectedExecutionHandler handler
          */
         ThreadPoolExecutor executor = new ThreadPoolExecutor(
-                4,
-                8,
-                5,
-                TimeUnit.MINUTES,
-                new LinkedBlockingQueue(2000),//由项目最终能站多大内存决定
+                appThreadPoolProperties.getCore(),
+                appThreadPoolProperties.getMax(),
+                appThreadPoolProperties.getKeepAliveTime(),
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue(appThreadPoolProperties.getQueueSize()),//由项目最终能站多大内存决定
                 new ThreadFactory() { //负责给线程池创建线程
                     int i=0; //记录自增id
                     @Override
                     public Thread newThread(Runnable r) {
                         Thread thread = new Thread(r);
-                        thread.setName("core-thread-"+ i++);
+                        thread.setName(applicationName+ "[core-thread-"+ i++ +"]");
                         return thread;
                     }
                 },

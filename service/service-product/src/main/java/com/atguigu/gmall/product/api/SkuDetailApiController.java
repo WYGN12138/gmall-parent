@@ -102,9 +102,9 @@ public class SkuDetailApiController {
      * @return
      */
     @GetMapping("/skudetail/saleattrvalues/{skuId}/{spuId}")
-    public Result<List<SpuSaleAttr>> getSkuSaleAttrValues(@PathVariable("skuId") Long skuId,
-                                       @PathVariable("spuId") Long spuId) {
-        List<SpuSaleAttr> saleAttrList = spuSaleAttrService.getSaleAttrAndValueMarkSku(skuId, spuId);
+    public Result<List<SpuSaleAttr>> getSkuSaleAttrValues(@PathVariable("spuId") Long spuId,
+                                                          @PathVariable("skuId") Long skuId) {
+        List<SpuSaleAttr> saleAttrList = spuSaleAttrService.getSaleAttrAndValueMarkSku(spuId,skuId);
         return Result.ok(saleAttrList);
     }
 

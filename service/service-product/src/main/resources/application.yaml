@@ -22,7 +22,11 @@ app:
     ak: admin
     sk: admin123456
     bucketName: sph-trademark
-
+  thread-pool:
+    core: 4
+    max: 8
+    queue-size: 2000
+    keep-alive-time: 300
 feign:
   client:
     config:
