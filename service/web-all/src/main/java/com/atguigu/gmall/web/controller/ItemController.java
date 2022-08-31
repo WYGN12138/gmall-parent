@@ -26,15 +26,15 @@ public class ItemController {
         Result<SkuDetailTo> result = skuDetailFeignClient.getSkuDetail(skuId);
         if (result.isOk()) {
             SkuDetailTo skuDetailTo = result.getData();
+            if (skuDetailTo.getSkuInfo() ==null){
+                return "item/404";
+            }
             model.addAttribute("categoryView", skuDetailTo.getCategoryView());
             model.addAttribute("skuInfo", skuDetailTo.getSkuInfo());
             model.addAttribute("price",skuDetailTo.getPrice());
             model.addAttribute("spuSaleAttrList", skuDetailTo.getSpuSaleAttrList());
             model.addAttribute("valuesSkuJson", skuDetailTo.getValueSkuJson());
-
         }
-
-
         return "item/index";
     }
 }

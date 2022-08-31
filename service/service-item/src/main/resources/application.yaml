@@ -1,5 +1,5 @@
 server:
-  port: 9030
+  port: 9020
 spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
