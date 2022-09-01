@@ -1,6 +1,7 @@
 package com.atguigu.gmall.item;
 
 import com.atguigu.gmall.common.annotation.EnableThreadPool;
+import com.atguigu.gmall.common.config.RedissonAutoConfiguration;
 import com.atguigu.gmall.common.config.threadpool.AppThreadPoolAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Import;
  StringRedisTemplate RedisTemplate<string,String>
  给redis存数据，key是string,value序列化成字符
  */
+@Import(RedissonAutoConfiguration.class)
 @EnableFeignClients
 @SpringCloudApplication
 @EnableThreadPool  //自定义线程池注解

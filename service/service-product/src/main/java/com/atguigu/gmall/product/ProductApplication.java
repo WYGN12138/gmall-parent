@@ -1,5 +1,6 @@
 package com.atguigu.gmall.product;
 
+import com.atguigu.gmall.common.config.RedissonAutoConfiguration;
 import com.atguigu.gmall.common.config.Swagger2Config;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *  2、批量导入： @SpringBootApplication(scanBasePackages = "com.atguigu.gmall")
  *  3、精准导入：@Import({Swagger2Config.class})
  */
-@Import({Swagger2Config.class})
+@Import({Swagger2Config.class, RedissonAutoConfiguration.class})
 @SpringCloudApplication
 @MapperScan("com.atguigu.gmall.product.mapper")
 public class ProductApplication {
