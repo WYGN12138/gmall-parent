@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *  2、批量导入： @SpringBootApplication(scanBasePackages = "com.atguigu.gmall")
  *  3、精准导入：@Import({Swagger2Config.class})
  */
+@EnableScheduling  //开启spring定时调度任务
 @Import({Swagger2Config.class, RedissonAutoConfiguration.class})
 @SpringCloudApplication
 @MapperScan("com.atguigu.gmall.product.mapper")

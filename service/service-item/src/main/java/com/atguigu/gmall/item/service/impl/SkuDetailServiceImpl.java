@@ -3,6 +3,7 @@ package com.atguigu.gmall.item.service.impl;
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
+import com.atguigu.gmall.item.cache.annotation.GmallCache;
 import com.atguigu.gmall.item.cache.CacheOpsService;
 import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
@@ -13,7 +14,6 @@ import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.security.Escape;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -115,8 +114,20 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         return detailTo;
     }
 
+
+    @GmallCache(cacheKey = SysRedisConst.SKU_INFO_CACHE_KEY+"#{#params[0]}")
     @Override
     public SkuDetailTo getSkuDetail(Long skuId) {
+        SkuDetailTo formRpc = getSkuDetailFormRpc(skuId);
+
+        return formRpc;
+    }
+    /**
+     * 手写缓存----改造aop面向切面
+     * @param skuId
+     * @return
+     */
+    public SkuDetailTo getSkuDetailWithCaxhe(Long skuId) {
         String cacheKey = SysRedisConst.SKU_INFO_CACHE_KEY + skuId;
         //1.先查缓存中是否可以命中
         SkuDetailTo cacheData = cacheOpsService.getCacheData(cacheKey, SkuDetailTo.class);
@@ -223,6 +234,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         SkuDetailTo skuDetailTo = Jsons.toObj(jsonStr, SkuDetailTo.class);
         return skuDetailTo;
     }
+
+
 
 /**
  * 使用本地缓存

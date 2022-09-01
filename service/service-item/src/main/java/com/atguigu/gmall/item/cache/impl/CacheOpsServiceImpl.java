@@ -3,14 +3,15 @@ package com.atguigu.gmall.item.cache.impl;
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.util.Jsons;
 import com.atguigu.gmall.item.cache.CacheOpsService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -41,8 +42,31 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         return t;
     }
 
+    /**
+     * 逆转json生成type类型的复杂对象
+     * @param cacheKey
+     * @param type
+     * @return
+     */
     @Override
-    public boolean bloomContains(Long skuId) {
+    public Object getCacheData(String cacheKey, Type type) {
+        //缓存中获取
+        String jsonStr =  redisTemplate.opsForValue().get(cacheKey);
+        //引入null值缓存机制
+        if(SysRedisConst.NULL_VAL.equals(jsonStr)){ //查询到
+            return null;
+        }
+        Object obj = Jsons.toObj(jsonStr, new TypeReference<Object>() {
+            @Override
+            public Type getType() {
+                return type.getClass();  //带泛型的类型
+            }
+        });
+        return obj;
+    }
+
+    @Override
+    public boolean bloomContains(Object skuId) {
         RBloomFilter<Object> filter = redissonClient.getBloomFilter(SysRedisConst.BLOOM_SKUID);
         return filter.contains(skuId);
     }
