@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *  3、精准导入：@Import({Swagger2Config.class})
  */
 @EnableScheduling  //开启spring定时调度任务
-@Import({Swagger2Config.class, RedissonAutoConfiguration.class})
+@Import({Swagger2Config.class})
 @SpringCloudApplication
 @MapperScan("com.atguigu.gmall.product.mapper")
 public class ProductApplication {

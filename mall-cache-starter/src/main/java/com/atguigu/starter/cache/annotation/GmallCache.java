@@ -17,5 +17,5 @@ public @interface GmallCache {
 
     String bloomValue() default ""; //指定布隆判定的表达式
 
-    String lockName() default "lock:global"; //指定锁
+    String lockName() default ""; //指定锁
 }

@@ -8,4 +8,5 @@ public class SysRedisConst {
     public static final Long SKUDETAIL_TTL = 60*60*24*7L;
     public static final String SKU_INFO_CACHE_KEY = "sku:info:";
     public static final String BLOOM_SKUID = "bloom:skuid";
+    public static final String LOCK_PREFIX = "lock:";
 }
