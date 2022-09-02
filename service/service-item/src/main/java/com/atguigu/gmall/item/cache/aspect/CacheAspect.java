@@ -95,26 +95,48 @@ public class CacheAspect {
             }
             //5。布隆说有准备回源，加锁
             boolean lock = false;
+            String lockName= "";
             try {
-                lock = cacheOpsService.tryLock((Long) arg);
+                lockName= determinLockName(joinPoint);
+                lock = cacheOpsService.tryLock(lockName);
                 if (lock) {
                     //6.获取到锁，开始回源
-                    Object proceed = joinPoint.proceed(joinPoint.getArgs());
+                     result = joinPoint.proceed(joinPoint.getArgs());
                     //7.调用成功，重新保存缓存
-                    cacheOpsService.saveData(cacheKey, arg);
-                    return proceed;
+                    cacheOpsService.saveData(cacheKey, result);
+                    return result;
 
                 } else {
                     Thread.sleep(1000L);
                     return cacheOpsService.getCacheData(cacheKey, SkuDetailTo.class);
                 }
             } finally {
-                if (lock) cacheOpsService.unlock((Long) arg);
+                if (lock) cacheOpsService.unlock(lockName);
 
             }
         }
         // 缓存中有直接返回
         return cacheData;
+    }
+
+    /**
+     * 根据表达式计算出锁名
+     * @param joinPoint
+     * @return
+     */
+    private String determinLockName(ProceedingJoinPoint joinPoint) {
+        //1.拿到目标方法的注解
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        //2.拿到目标方法
+        Method method = signature.getMethod();
+        //3.拿到注解
+        GmallCache cacheAnnotation = method.getDeclaredAnnotation(GmallCache.class);
+        //拿到锁表达式
+        String lockName = cacheAnnotation.lockName();
+        String  lockNameVal = evaluationException(lockName, joinPoint, String.class);
+        return lockNameVal;
+
+
     }
 
     /**

@@ -59,7 +59,7 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         Object obj = Jsons.toObj(jsonStr, new TypeReference<Object>() {
             @Override
             public Type getType() {
-                return type.getClass();  //带泛型的类型
+                return type;  //这个是方法的带泛型的返回值类型
             }
         });
         return obj;
@@ -88,6 +88,19 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         return tryLock;
     }
 
+    /**
+     * 加指定的锁
+     * @param lockName
+     * @return
+     */
+    @Override
+    public boolean tryLock(String lockName) {
+        RLock lock = redissonClient.getLock(lockName);
+        //尝试加锁
+        return lock.tryLock();
+
+    }
+
     @Override
     public void saveData(String cacheKey, Object formRpc) {
         if (formRpc ==null){
@@ -102,11 +115,25 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         }
     }
 
+    /**
+     * 解锁
+     * @param skuId
+     */
     @Override
     public void unlock(Long skuId) {
         String lockKey = SysRedisConst.SKU_DETAIL+skuId;
         RLock lock = redissonClient.getLock(lockKey);
         //解锁
         lock.unlock();
+    }
+
+    /**
+     * 解指定锁
+     * @param lockName
+     */
+    @Override
+    public void unlock(String lockName) {
+        RLock lock = redissonClient.getLock(lockName);
+        lock.unlock(); //redisson已经防止删别人的锁
     }
 }
