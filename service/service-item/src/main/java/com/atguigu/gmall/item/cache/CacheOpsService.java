@@ -29,6 +29,15 @@ public interface CacheOpsService {
     boolean bloomContains(Object skuId);
 
     /**
+     * 判定指定（bloomName）布隆过滤器是否含有指定值（bVal）
+     * @param bloomName
+     * @param bVal
+     * @return
+     */
+    boolean bloomContains(String bloomName, Object bVal);
+
+
+    /**
      * 给指定商品加锁
      * @param skuId
      * @return
@@ -47,4 +56,5 @@ public interface CacheOpsService {
      * @param skuId
      */
     void unlock(Long skuId);
+
 }

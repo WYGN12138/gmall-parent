@@ -72,6 +72,13 @@ public class CacheOpsServiceImpl implements CacheOpsService {
     }
 
     @Override
+    public boolean bloomContains(String bloomName, Object bVal) {
+        RBloomFilter<Object> filter = redissonClient.getBloomFilter(bloomName);
+        return filter.contains(bVal);
+
+    }
+
+    @Override
     public boolean tryLock(Long skuId) {
         String lockKey = SysRedisConst.SKU_DETAIL+skuId;
         //skuId的唯一锁

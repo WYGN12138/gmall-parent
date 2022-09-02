@@ -21,6 +21,7 @@ import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -80,10 +81,17 @@ public class CacheAspect {
         if (cacheData == null) {
             //3.准备回源
             //4.先问布隆
-            //TODO 布隆不通用
-            boolean contains = cacheOpsService.bloomContains(arg);
-            if (!contains) {
-                return null;
+            //TODO 有些场景不一定需要布隆，比如三级分类（只有一个大数据）
+//            boolean contains = cacheOpsService.bloomContains(arg);
+            String bloomName = determinBloomName(joinPoint);
+            //判断是否需要开启布隆
+            if (!StringUtils.isEmpty(bloomName)){//布隆的名字不为null
+                Object bVal= determinBloomValue(joinPoint);
+
+                boolean contains = cacheOpsService.bloomContains(bloomName,bVal);
+                if (!contains) {
+                    return null;
+                }
             }
             //5。布隆说有准备回源，加锁
             boolean lock = false;
@@ -107,6 +115,41 @@ public class CacheAspect {
         }
         // 缓存中有直接返回
         return cacheData;
+    }
+
+    /**
+     * 根据布隆过滤器表达式计算出布隆需要判定的值
+     * @param joinPoint
+     * @return
+     */
+    private Object determinBloomValue(ProceedingJoinPoint joinPoint) {
+        //1.拿到目标方法的注解
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        //2.拿到目标方法
+        Method method = signature.getMethod();
+        //3.拿到注解
+        GmallCache cacheAnnotation = method.getDeclaredAnnotation(GmallCache.class);
+        //拿到布隆表达式
+        String bloomValue = cacheAnnotation.bloomValue();
+        Object exception = evaluationException(bloomValue, joinPoint, Object.class);
+        return exception; //计算得到的值
+    }
+
+    /**
+     * 获取bloom的名字
+     * @param joinPoint
+     * @return
+     */
+    private String determinBloomName(ProceedingJoinPoint joinPoint) {
+        //1.拿到目标方法的注解
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        //2.拿到目标方法
+        Method method = signature.getMethod();
+        //3.拿到注解
+        GmallCache cacheAnnotation = method.getDeclaredAnnotation(GmallCache.class);
+
+        String bloomName = cacheAnnotation.bloomName();
+        return bloomName;
     }
 
     /**
