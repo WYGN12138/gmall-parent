@@ -17,8 +17,7 @@ import org.springframework.context.annotation.Import;
  StringRedisTemplate RedisTemplate<string,String>
  给redis存数据，key是string,value序列化成字符
  */
-@EnableAspectJAutoProxy //开启aspectj的自动代理功能
-@Import(RedissonAutoConfiguration.class)
+
 @EnableFeignClients
 @SpringCloudApplication
 @EnableThreadPool  //自定义线程池注解
