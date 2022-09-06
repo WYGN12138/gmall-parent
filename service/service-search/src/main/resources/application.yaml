@@ -1,0 +1,13 @@
+server:
+  port: 9030
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  elasticsearch:
+    rest:
+      uris: http://192.168.200.100:9200
+logging:
+  level:
+    tracer: teace #打开追踪器
+    com.atguigu.gmall: trace
+    org.elasticsearch: trace
