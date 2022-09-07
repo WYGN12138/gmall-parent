@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *  2、批量导入： @SpringBootApplication(scanBasePackages = "com.atguigu.gmall")
  *  3、精准导入：@Import({Swagger2Config.class})
  */
+@EnableFeignClients(basePackages =
+        "com.atguigu.gmall.feign.search"
+)
 @EnableScheduling  //开启spring定时调度任务
 @Import({Swagger2Config.class})
 @SpringCloudApplication

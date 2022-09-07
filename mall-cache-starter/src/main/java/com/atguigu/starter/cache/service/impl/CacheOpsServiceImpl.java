@@ -12,6 +12,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -23,6 +25,9 @@ public class CacheOpsServiceImpl implements CacheOpsService {
 
     @Autowired
     RedissonClient redissonClient;
+
+    //专门执行延迟任务的线程池
+    ScheduledExecutorService scheduledExecutor =Executors.newScheduledThreadPool(4);
     /**
      * 从缓存中获取数据，并转成指定类
      * @param cacheKey
@@ -65,6 +70,21 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         return obj;
     }
 
+    /**
+     * 延迟双删
+     * @param cacheKey
+     */
+    @Override
+    public void delay2Delete(String cacheKey) {
+        redisTemplate.delete(cacheKey);
+        //提交延迟任务，但是断电失效  非高并发不影响
+        //TODO 分布式框架 Redisson 找redisson api
+        scheduledExecutor.schedule(()->{
+            redisTemplate.delete(cacheKey);
+        },5,TimeUnit.SECONDS);
+
+    }
+
     @Override
     public boolean bloomContains(Object skuId) {
         RBloomFilter<Object> filter = redissonClient.getBloomFilter(SysRedisConst.BLOOM_SKUID);
@@ -103,6 +123,20 @@ public class CacheOpsServiceImpl implements CacheOpsService {
 
     @Override
     public void saveData(String cacheKey, Object formRpc) {
+        if (formRpc ==null){
+            //null值缓存机制(短时间)
+            redisTemplate.opsForValue().set(cacheKey,
+                    SysRedisConst.NULL_VAL,
+                    SysRedisConst.NULL_VAL_TTL,
+                    TimeUnit.SECONDS);
+        }else {//正常值
+            String str=Jsons.toStr(formRpc);
+            redisTemplate.opsForValue().set(cacheKey,str,SysRedisConst.SKUDETAIL_TTL,TimeUnit.SECONDS);
+        }
+    }
+
+    @Override
+    public void saveData(String cacheKey, Object formRpc, Long dataTtl) {
         if (formRpc ==null){
             //null值缓存机制(短时间)
             redisTemplate.opsForValue().set(cacheKey,

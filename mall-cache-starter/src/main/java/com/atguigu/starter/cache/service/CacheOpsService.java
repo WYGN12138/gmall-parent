@@ -21,6 +21,13 @@ public interface CacheOpsService {
      * @return
      */
     Object getCacheData(String cacheKey, Type type);
+
+    /**
+     * 延迟双删解决缓存写一直问题
+     * @param cacheKey
+     */
+    void delay2Delete(String cacheKey);
+
     /**
      * 布隆过滤器判断是否存在
      * @param skuId
@@ -57,6 +64,14 @@ public interface CacheOpsService {
      * @param formRpc
      */
     void saveData(String cacheKey, Object formRpc);
+
+    /**
+     * 带自定义过期时间的保存
+     * @param cacheKey
+     * @param formRpc
+     * @param ttl
+     */
+    void saveData(String cacheKey, Object formRpc,Long dataTtl);
 
     /**
      * 对应解锁

@@ -18,4 +18,6 @@ public @interface GmallCache {
     String bloomValue() default ""; //指定布隆判定的表达式
 
     String lockName() default ""; //指定锁
+
+    long ttl() default 60*30L;  //指定过期时间
 }

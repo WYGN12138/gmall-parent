@@ -1,12 +1,14 @@
 server:
   port: 9010
 spring:
+  main:
+    allow-bean-definition-overriding: true
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-  zipkin:
-    base-url: http://192.168.200.100:9411/
-    sender:
-      type: web
+#  zipkin:
+#    base-url: http://192.168.200.100:9411/
+#    sender:
+#      type: web
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
@@ -15,6 +17,6 @@ feign:
     config:
       default:
         #建立连接所用的时间，适用于网络状况正常的情况下，两端连接所需要的时间
-        ConnectTimeOut: 5000
+        ConnectTimeOut: 500
         #指建立连接后从服务端读取到可用资源所用的时间
         ReadTimeOut: 5000

@@ -59,6 +59,12 @@ public class CacheAspect {
     ExpressionParser parser = new SpelExpressionParser();
     ParserContext context = new TemplateParserContext();
 
+    /**
+     * aop封装-- 环绕通知
+     * @param joinPoint
+     * @return
+     * @throws Throwable
+     */
     @Around("@annotation(com.atguigu.starter.cache.annotation.GmallCache)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = null;
@@ -96,7 +102,8 @@ public class CacheAspect {
                     //6.获取到锁，开始回源
                      result = joinPoint.proceed(joinPoint.getArgs());
                     //7.调用成功，重新保存缓存
-                    cacheOpsService.saveData(cacheKey, result);
+                    long ttl = determinTtl(joinPoint);
+                    cacheOpsService.saveData(cacheKey, result,ttl);
                     return result;
 
                 } else {
@@ -110,6 +117,28 @@ public class CacheAspect {
         }
         // 缓存中有直接返回
         return cacheData;
+    }
+
+    private long determinTtl(ProceedingJoinPoint joinPoint) {
+        GmallCache cacheAnnotation = getAnnotation(joinPoint);
+        //拿到表达式
+        long ttl = cacheAnnotation.ttl();
+        return ttl;
+
+    }
+
+    /**
+     * 抽取获得注解方法
+     * @param joinPoint
+     * @return
+     */
+    private GmallCache getAnnotation(ProceedingJoinPoint joinPoint) {
+        //1.拿到目标方法的注解
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        //2.拿到目标方法
+        Method method = signature.getMethod();
+        //3.拿到注解
+        return method.getDeclaredAnnotation(GmallCache.class);
     }
 
     /**
@@ -143,11 +172,7 @@ public class CacheAspect {
      */
     private Object determinBloomValue(ProceedingJoinPoint joinPoint) {
         //1.拿到目标方法的注解
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        //2.拿到目标方法
-        Method method = signature.getMethod();
-        //3.拿到注解
-        GmallCache cacheAnnotation = method.getDeclaredAnnotation(GmallCache.class);
+        GmallCache cacheAnnotation = getAnnotation(joinPoint);
         //拿到布隆表达式
         String bloomValue = cacheAnnotation.bloomValue();
         Object exception = evaluationException(bloomValue, joinPoint, Object.class);
@@ -161,11 +186,7 @@ public class CacheAspect {
      */
     private String determinBloomName(ProceedingJoinPoint joinPoint) {
         //1.拿到目标方法的注解
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        //2.拿到目标方法
-        Method method = signature.getMethod();
-        //3.拿到注解
-        GmallCache cacheAnnotation = method.getDeclaredAnnotation(GmallCache.class);
+        GmallCache cacheAnnotation = getAnnotation(joinPoint);
 
         String bloomName = cacheAnnotation.bloomName();
         return bloomName;
@@ -191,11 +212,7 @@ public class CacheAspect {
      */
     private String determinCacheKey(ProceedingJoinPoint joinPoint) {
         //1.拿到目标方法的注解
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        //2.拿到目标方法
-        Method method = signature.getMethod();
-        //3.拿到注解
-        GmallCache cacheAnnotation = method.getDeclaredAnnotation(GmallCache.class);
+        GmallCache cacheAnnotation = getAnnotation(joinPoint);
 
         String expression = cacheAnnotation.cacheKey();
 
