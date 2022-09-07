@@ -54,8 +54,6 @@ public class SearchController {
         //9.参数url
         model.addAttribute("urlParam", data.getUrlParam());
 
-        model.addAttribute("", search);
-
 
         return "list/index";
     }

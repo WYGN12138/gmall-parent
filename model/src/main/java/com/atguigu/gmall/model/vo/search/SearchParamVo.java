@@ -11,5 +11,5 @@ public class SearchParamVo {
     String[] props;
     String trademark;
     String order= "1:desc";
-    Integer pageNo;
+    Integer pageNo=1;
 }

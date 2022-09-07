@@ -6,8 +6,8 @@ spring:
   elasticsearch:
     rest:
       uris: http://192.168.200.100:9200
-logging:
-  level:
-    tracer: teace #打开追踪器
-    com.atguigu.gmall: trace
-    org.elasticsearch: trace
+#logging:
+#  level:
+#    tracer: teace #打开追踪器
+#    com.atguigu.gmall: trace
+#    org.elasticsearch: trace

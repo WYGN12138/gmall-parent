@@ -23,5 +23,5 @@ public interface SearchFeignClient {
      * @return
      */
     @PostMapping("/goods/search")
-    Result<SearchResponseVo> search(@RequestParam SearchParamVo paramVo);
+    Result<SearchResponseVo> search(@RequestBody SearchParamVo paramVo);
 }

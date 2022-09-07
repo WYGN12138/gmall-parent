@@ -33,7 +33,7 @@ public class SearchApiController {
      * @return
      */
     @PostMapping("/goods/search")
-    public Result<SearchResponseVo> search(@RequestParam SearchParamVo paramVo){
+    public Result<SearchResponseVo> search(@RequestBody SearchParamVo paramVo){
         SearchResponseVo responseVo =goodsService.search(paramVo);
         return Result.ok(responseVo);
 

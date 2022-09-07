@@ -15,6 +15,9 @@ import org.bouncycastle.math.raw.Nat;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.nested.NestedAggregationBuilder;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -208,118 +211,147 @@ public class GoodsServiceImpl implements GoodsService {
      * @return
      */
     private Query buildQueryDsl(SearchParamVo paramVo) {
-        //1.准备bool查询
+        //1、准备bool
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-        //2.给bool中准备must
-        //2.1 前端传入了category1Id
-        if (paramVo.getCategory1Id() != null) {
+        //2、给bool中准备must的各个条件
+        //2.1）、前端传了 分类
+        if(paramVo.getCategory1Id()!= null){
             boolQuery
                     .must(QueryBuilders
-                            .termQuery("getCategory1Id",
+                            .termQuery("category1Id",
                                     paramVo.getCategory1Id()));
         }
-        if (paramVo.getCategory2Id() != null) {
-            boolQuery.must(QueryBuilders
-                    .termQuery("getCategory2Id",
-                            paramVo.getCategory2Id()));
+        if(paramVo.getCategory2Id()!=null){
+            boolQuery.must(QueryBuilders.termQuery("category2Id",paramVo.getCategory2Id()));
         }
-        if (paramVo.getCategory3Id() != null) {
-            boolQuery.must(QueryBuilders
-                    .termQuery("getCategory3Id",
-                            paramVo.getCategory3Id()));
-        }
-        //2.2 前端传了 keyword
-        if (!StringUtils.isEmpty(paramVo.getKeyword())) {
-            boolQuery.must(QueryBuilders.matchQuery("title", paramVo.getKeyword()));
-        }
-        //2.3 前端穿了品牌
-        if (!StringUtils.isEmpty(paramVo.getTrademark())) {
-            //得到品牌Id
-            long tmId = Long.parseLong(paramVo.getTrademark().split(":")[0]);
-            boolQuery.must(QueryBuilders.termQuery("tmId", tmId));
+        if(paramVo.getCategory3Id()!=null){
+            boolQuery.must(QueryBuilders.termQuery("category3Id",paramVo.getCategory3Id()));
         }
 
-        //2.4 如果前端传入了属性
+        //2.2）、前端传了 keyword。要进行全文检索
+        if(!StringUtils.isEmpty(paramVo.getKeyword())){
+            boolQuery.must(QueryBuilders.matchQuery("title",paramVo.getKeyword()));
+        }
+
+        //2.3）、前端传了品牌 trademark=4:小米
+        if(!StringUtils.isEmpty(paramVo.getTrademark())){
+            long tmId = Long.parseLong(paramVo.getTrademark().split(":")[0]);
+            boolQuery.must(QueryBuilders.termQuery("tmId",tmId));
+        }
+
+        //2.4）、前端传了属性 props=4:128GB:机身存储&props=5:骁龙730:CPU型号
         String[] props = paramVo.getProps();
-        if (props != null && props.length > 0) {
+        if(props!=null && props.length > 0){
             for (String prop : props) {
-                //得到属性id和值
+                //4:128GB:机身存储 得到属性id和值
                 String[] split = prop.split(":");
-                long attrId = Long.parseLong(split[0]);
+                Long attrId = Long.parseLong(split[0]);
                 String attrValue = split[1];
+
                 //构造boolQuery
                 BoolQueryBuilder nestedBool = QueryBuilders.boolQuery();
-                nestedBool.must(QueryBuilders.termQuery("attrs.attrId", attrId));
-                nestedBool.must(QueryBuilders.termQuery("attrs.attrValue", attrValue));
+                nestedBool.must(QueryBuilders.termQuery("attrs.attrId",attrId));
+                nestedBool.must(QueryBuilders.termQuery("attrs.attrValue",attrValue));
 
                 NestedQueryBuilder nestedQuery =
-                        QueryBuilders.nestedQuery("attrs", nestedBool, ScoreMode.None);
+                        QueryBuilders.nestedQuery("attrs",nestedBool, ScoreMode.None);
 
-                //给最大的boolQuery中放 嵌入式nestedBool
+                //给最大的boolQuery里面放 嵌入式查询 nestedQuery
                 boolQuery.must(nestedQuery);
-
             }
-
         }
+        //===========检索条件结束=====================
 
-        //准备一个原生检索条件【原生dsl】
+
+
+        //0、准备一个原生检索条件【原生的dsl】
         NativeSearchQuery query = new NativeSearchQuery(boolQuery);
-        //2.5 前端传入了排序
-        if (!StringUtils.isEmpty(paramVo.getOrder())) {
-            String order = paramVo.getOrder();
-            String[] split = order.split(":");
+        //2.5）、前端传了排序 order=2:asc
+        if(!StringUtils.isEmpty(paramVo.getOrder())){
+            String[] split = paramVo.getOrder().split(":");
             //分析排序用哪个字段
             String orderField = "hotScore";
-            switch (split[0]) {
-                case "1":
-                    orderField = "hotScore";
-                    break;
-                case "2":
-                    orderField = "price";
-                    break;
-                case "3":
-                    orderField = "createTime";
-                    break;
-                default:
-                    orderField = "hotScore";
+            switch (split[0]){
+                case "1": orderField = "hotScore";break;
+                case "2": orderField = "price";break;
+                case "3": orderField = "createTime";break;
+                default: orderField = "hotScore";
             }
-
-            //排序方式
             Sort sort = Sort.by(orderField);
-            if (split[1].equals("asc")) {
+            if(split[1].equals("asc")) {
                 sort = sort.ascending();
-            } else {
+            }else {
                 sort = sort.descending();
             }
             query.addSort(sort);
-
-            //2.6 前端传了页码
-            if (paramVo.getPageNo() != null && paramVo.getPageNo() > 0) {
-                //spring底层是从0开始 自己要计算前端页码-1
-                PageRequest request = PageRequest.of(paramVo.getPageNo() - 1, SysRedisConst.SEARCH_PAGE_SIZE);
-                query.setPageable(request);
-                //===============================排序分页结束=============
-                //2.7
-                if (!StringUtils.isEmpty(paramVo.getKeyword())) {
-                    HighlightBuilder highlightBuilder = new HighlightBuilder();
-                    highlightBuilder.field("title")
-                            .preTags("<span style = 'color:red'>")
-                            .postTags("</span>");
-                    HighlightQuery highlightQuery = new HighlightQuery(highlightBuilder);
-                    query.setHighlightQuery(highlightQuery);
-                }
-                //============模糊查询高亮结束===========================
-
-                //TODO ============聚合分析上面的DSL检索到的所有商品中涉及了多少品牌和多少中平台属性
-
-
-            }
-
-
         }
+
+        //2.6）、前端传了页码
+        //页码在Spring底层是从0开始，自己要计算 前端页码-1 后的结果
+        PageRequest request = PageRequest.of(paramVo.getPageNo()-1, SysRedisConst.SEARCH_PAGE_SIZE);
+        query.setPageable(request);
+        //=============排序分页结束=====================
+
+
+
+        //2.7）、高亮
+        if(!StringUtils.isEmpty(paramVo.getKeyword())){
+            HighlightBuilder highlightBuilder = new HighlightBuilder();
+            highlightBuilder.field("title")
+                    .preTags("<span style='color:red'>")
+                    .postTags("</span>");
+
+            HighlightQuery highlightQuery = new HighlightQuery(highlightBuilder);
+            query.setHighlightQuery(highlightQuery);
+        }
+        //===========模糊查询高亮功能结束=================
+
+
+
+        //=========聚合分析上面DSL检索到的所有商品涉及了多少种品牌和多少种平台属性
+        //TODO
+        //3、品牌聚合 - 品牌聚合分析条件
+//        TermsAggregationBuilder tmIdAgg = AggregationBuilders
+//                .terms("tmIdAgg")
+//                .field("tmId")
+//                .size(1000);
+//
+//
+//        //3.1 品牌聚合 - 品牌名子聚合
+//        TermsAggregationBuilder tmNameAgg = AggregationBuilders.terms("tmNameAgg").field("tmName").size(1);
+//        //3.2 品牌聚合 - 品牌logo子聚合
+//        TermsAggregationBuilder tmLogoAgg = AggregationBuilders.terms("tmLogoAgg").field("tmLogoUrl").size(1);
+//
+//        tmIdAgg.subAggregation(tmNameAgg);
+//        tmIdAgg.subAggregation(tmLogoAgg);
+//
+//        //品牌id聚合条件拼装完成
+//        query.addAggregation(tmIdAgg);
+//
+//
+//
+//        //4、属性聚合
+//        //4.1 属性的整个嵌入式聚合
+//        NestedAggregationBuilder attrAgg = AggregationBuilders.nested("attrAgg", "attrs");
+//
+//
+//        //4.2 attrid 聚合
+//        TermsAggregationBuilder attrIdAgg = AggregationBuilders.terms("attrIdAgg").field("attrs.attrId").size(100);
+//
+//        //4.3 attrname 聚合
+//        TermsAggregationBuilder attrNameAgg = AggregationBuilders.terms("attrNameAgg").field("attrs.attrName").size(1);
+//
+//        //4.4 attrvalue 聚合
+//        TermsAggregationBuilder attrValueAgg = AggregationBuilders.terms("attrValueAgg").field("attrs.attrValue").size(100);
+//
+//        attrIdAgg.subAggregation(attrNameAgg);
+//        attrIdAgg.subAggregation(attrValueAgg);
+//        attrAgg.subAggregation(attrIdAgg);
+//
+//        //添加整个属性的聚合条件
+//        query.addAggregation(attrAgg);
+
         return query;
-
     }
-
 
 }
