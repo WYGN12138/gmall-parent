@@ -4,6 +4,7 @@ import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
 import com.atguigu.gmall.feign.product.SkuProductFeignClient;
+import com.atguigu.gmall.feign.search.SearchFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
 import com.atguigu.gmall.model.product.SkuInfo;
@@ -54,6 +55,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     ThreadPoolExecutor executor;
     @Resource
     CacheOpsService cacheOpsService;
+    @Resource
+    SearchFeignClient searchFeignClient;
 
     public SkuDetailTo getSkuDetailFormRpc(Long skuId) {
         SkuDetailTo detailTo = new SkuDetailTo();
@@ -129,6 +132,17 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
         return formRpc;
     }
+
+    @Override
+    public void updateScore(Long skuId) {
+        Long score = redisTemplate.opsForValue()
+                .increment(SysRedisConst.SKU_HOTSCORE_PREFIX + skuId);
+        if (score%100==0 ){
+            //积累到100
+            searchFeignClient.updateHotScore(skuId,score);
+        }
+    }
+
     /**
      * 手写缓存----改造aop面向切面
      * @param skuId

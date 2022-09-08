@@ -15,7 +15,7 @@
     <resultMap id="SearchAttrRM" type="com.atguigu.gmall.model.list.SearchAttr">
         <id column="attr_id" property="attrId"></id>
         <result column="attr_name" property="attrName"></result>
-        <result column="value_name" property="attrName"></result>
+        <result column="value_name" property="attrValue"></result>
     </resultMap>
     <select id="getSkuAttrNameAndValue" resultMap="SearchAttrRM">
         select sav.*,bai.attr_name,bav.value_name

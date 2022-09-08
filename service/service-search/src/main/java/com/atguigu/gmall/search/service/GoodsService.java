@@ -21,4 +21,11 @@ public interface GoodsService {
 
     //商品检索
     SearchResponseVo search(SearchParamVo paramVo);
+
+    /**
+     * 更新热度分
+     * @param skuId
+     * @param score
+     */
+    void updateHotScore(Long skuId, Long score);
 }

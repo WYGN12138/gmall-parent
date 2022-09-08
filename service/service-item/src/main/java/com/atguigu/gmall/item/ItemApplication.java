@@ -18,7 +18,10 @@ import org.springframework.context.annotation.Import;
  给redis存数据，key是string,value序列化成字符
  */
 
-@EnableFeignClients(basePackages = "com.atguigu.gmall.feign.product")
+@EnableFeignClients(basePackages = {
+        "com.atguigu.gmall.feign.product",
+        "com.atguigu.gmall.feign.search"
+})
 @SpringCloudApplication
 @EnableThreadPool  //自定义线程池注解
 public class ItemApplication {
