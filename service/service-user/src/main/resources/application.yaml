@@ -1,0 +1,42 @@
+server:
+  port: 9040
+
+#数据源配置好
+spring:
+#  profiles:
+#    include: sharding
+  #    active: sharding #主文件 application.yaml 启动时一同启动
+  #  zipkin:
+  #    base-url: http://192.168.200.100:9411/
+  #    sender:
+  #      type: web
+  datasource:
+    url: jdbc:mysql://192.168.200.100:3306/gmall_user?useSSL=false&characterEncoding=utf-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+#  redis:
+#    host: 192.168.200.100
+#    password: Ly123456
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml     # mapper映射文件
+#自定义
+#app:
+#  minio:
+#    endpoint: http://192.168.200.100:9000
+#    ak: admin
+#    sk: admin123456
+#    bucketName: sph-trademark
+#  thread-pool:
+#    core: 4
+#    max: 8
+#    queue-size: 2000
+#    keep-alive-time: 300
+#feign:
+#  client:
+#    config:
+#      default:
+#        #建立连接所用的时间，适用于网络状况正常的情况下，两端连接所需要的时间
+#        ConnectTimeOut: 5000
+#        #指建立连接后从服务端读取到可用资源所用的时间
+#        ReadTimeOut: 5000
