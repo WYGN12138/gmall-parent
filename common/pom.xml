@@ -8,14 +8,13 @@
         <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <!-- 管理所有通用模块的父项目-->
     <packaging>pom</packaging>
-
     <modules>
         <module>common-util</module>
         <module>service-util</module>
         <module>feign-client</module>
     </modules>
-
 
     <artifactId>common</artifactId>
 
@@ -23,6 +22,8 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+
     <!--    不写依赖管理，直接导入依赖-->
     <dependencies>
         <dependency>

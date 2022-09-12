@@ -11,7 +11,6 @@
 
     <artifactId>model</artifactId>
 
-
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -23,6 +22,11 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.atguigu.gmall</groupId>
+            <artifactId>common-util</artifactId>
+            <version>1.0</version>
+        </dependency>
         <!--mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -47,4 +51,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
 </project>

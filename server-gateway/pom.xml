@@ -8,11 +8,9 @@
         <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <description>网关</description>
+    <description>网关，所有请求都先通过它</description>
 
     <artifactId>server-gateway</artifactId>
-
-
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -21,6 +19,10 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <!-- 服务注册 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -30,6 +32,11 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- 流量控制、熔断降级 -->
@@ -51,6 +58,11 @@
             <artifactId>spring-cloud-starter-zipkin</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
 
         <!--        网关-->
         <!--        spring-cloud-starter-gateway-->
@@ -58,32 +70,18 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
+
         <dependency>
             <groupId>com.atguigu.gmall</groupId>
             <artifactId>model</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>com.atguigu.gmall</groupId>
             <artifactId>common-util</artifactId>
             <version>1.0</version>
         </dependency>
 
-
     </dependencies>
-
-
 </project>
