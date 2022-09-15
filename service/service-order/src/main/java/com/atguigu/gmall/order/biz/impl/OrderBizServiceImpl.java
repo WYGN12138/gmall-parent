@@ -22,6 +22,7 @@ import com.atguigu.gmall.model.user.UserAddress;
 import com.atguigu.gmall.model.vo.order.CartInfoVo;
 import com.atguigu.gmall.model.vo.order.OrderSubmitVo;
 import com.atguigu.gmall.model.vo.user.UserAuthInfo;
+import com.atguigu.gmall.order.service.OrderInfoService;
 import com.google.common.collect.Lists;
 
 import com.atguigu.gmall.model.vo.order.OrderConfirmDateVo;
@@ -49,6 +50,8 @@ public class OrderBizServiceImpl implements OrderBizService {
     OrderBizService orderBizService;
     @Autowired
     StringRedisTemplate redisTemplate;
+    @Autowired
+    OrderInfoService orderInfoService;
 
 
 
@@ -208,10 +211,12 @@ public class OrderBizServiceImpl implements OrderBizService {
                     ResultCodeEnum.ORDER_PRICE_CHANGED.getMessage() + "<br/>" +skuName,
                     ResultCodeEnum.ORDER_PRICE_CHANGED.getCode());
         }
-
         //4.保存数据库
+        Long orderId = orderInfoService.saveOrder(submitVo,tradeNo);
 
 
-        return null;
+        return orderId;
     }
+
+
 }

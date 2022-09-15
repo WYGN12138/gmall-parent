@@ -19,6 +19,6 @@ public class OrderRestController {
                               @RequestBody OrderSubmitVo submitVo){
 
         Long orderId = orderBizService.submitOrder(tradeNo,submitVo);
-        return Result.ok();
+        return Result.ok(orderId.toString());
     }
 }

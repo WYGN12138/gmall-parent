@@ -36,4 +36,5 @@ public interface OrderBizService {
      * @return
      */
     Long submitOrder(String tradeNo, OrderSubmitVo submitVo);
+
 }

@@ -6,7 +6,9 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+@EnableTransactionManagement  //开启事务
 @EnableAutoExceptionHandler //全局异常处理器
 @EnableAutoFeignInterceptor  //开启feign透传id拦截器
 @EnableFeignClients({

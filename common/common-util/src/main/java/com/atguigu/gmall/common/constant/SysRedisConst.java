@@ -1,5 +1,7 @@
 package com.atguigu.gmall.common.constant;
 
+import io.swagger.models.auth.In;
+
 public class SysRedisConst {
     public static  final String NULL_VAL = "x";
 
@@ -22,4 +24,10 @@ public class SysRedisConst {
     public static final Integer CART_ITEM_NUM_LIMIT = 200;
     // 订单防重令牌
     public static final String ORDER_TEMP_TOKEN = "order:temptoken:"; // 加交易号
+
+    //设置订单过期时间
+    public static final Integer ORDER_CLOSE_TTL = 60*45; // 加交易号
+    public static final Integer ORDER_REFUND_TTL = 60*60*24*30; // 加交易号
+
+
 }
