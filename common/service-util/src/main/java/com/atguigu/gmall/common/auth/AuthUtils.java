@@ -20,7 +20,6 @@ public class AuthUtils {
         //1、拿到老请求
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-
         //2、获取信息
         UserAuthInfo authInfo = new UserAuthInfo();
         String header = request.getHeader(SysRedisConst.USERID_HEADER);

@@ -20,4 +20,6 @@ public class SysRedisConst {
 
     //单个商品数量限制
     public static final Integer CART_ITEM_NUM_LIMIT = 200;
+    // 订单防重令牌
+    public static final String ORDER_TEMP_TOKEN = "order:temptoken:"; // 加交易号
 }
