@@ -1,0 +1,41 @@
+{
+  "consignee": "admin",
+  "consigneeTel": "123456789",
+  "deliveryAddress": "北京市昌平区北七家",
+  "paymentWay": "ONLINE",
+  "orderComment": "",
+  "orderDetailList": [
+    {
+      "skuId": 42,
+      "imgUrl": "http://39.99.159.121:9000/gmall/1623051371250259ddd7c89704bd19db874fa7906ce0e.png",
+      "skuName": "小米 CC9 手机 美颜自拍 游戏手机 蓝色（深蓝星球） 全网通 6GB+128GB",
+      "orderPrice": 1943,
+      "skuNum": 10,
+      "hasStock": "1"
+    },
+    {
+      "skuId": 41,
+      "imgUrl": "http://39.99.159.121:9000/gmall/1623051685202b22930ae8ce248e39cce327fcb09d008.png",
+      "skuName": "荣耀V30 V30Pro 5G手机 华为麒麟990芯片 V30pro 幻夜星河 全网通（8+256G）",
+      "orderPrice": 4499,
+      "skuNum": 10,
+      "hasStock": "0"
+    },
+    {
+      "skuId": 51,
+      "imgUrl": "http://192.168.200.100:9000/sph-trademark/2022-08-26/8743e9401180416e8df6c89f38eeb04e_1.png",
+      "skuName": "Apple iPhone 12 (A2404) 256GB 黑色 支持移动联通电信5G 双卡双待手机",
+      "orderPrice": 5699,
+      "skuNum": 10,
+      "hasStock": "0"
+    },
+    {
+      "skuId": 50,
+      "imgUrl": "http://192.168.200.100:9000/sph-trademark/2022-08-26/615f318e77914652bfb4f879ffd26d68_1.png",
+      "skuName": "Apple iPhone 12 (A2404) 128GB 紫色 支持移动联通电信5G 双卡双待手机",
+      "orderPrice": 4899,
+      "skuNum": 10,
+      "hasStock": "0"
+    }
+  ]
+}
