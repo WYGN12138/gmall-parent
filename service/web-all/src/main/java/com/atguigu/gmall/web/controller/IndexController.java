@@ -16,7 +16,7 @@ public class IndexController {
     @Resource
     CategoryFeignClient categoryFeignClient;
 
-    @GetMapping({"/","/index"})
+    @GetMapping({"/","/index","/index.html"})
     public String indexPage(Model model){
         // classpath:/templates/index/index.html
         Result<List<CategoryTreeTo>> result = categoryFeignClient.getAllCategoryWithTree();

@@ -214,6 +214,9 @@ public class OrderBizServiceImpl implements OrderBizService {
         //4.保存数据库
         Long orderId = orderInfoService.saveOrder(submitVo,tradeNo);
 
+        //5.删除购物车
+        cartFeignClient.deleteChecked();
+
 
         return orderId;
     }
